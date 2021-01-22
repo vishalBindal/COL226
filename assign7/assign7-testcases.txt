@@ -1,0 +1,126 @@
+Assignment 7
+
+Vishal Bindal
+2018CS50425
+
+In this assignment I've implemented a type checker, using predicates hasType and typeElaborates.
+The predicates are defined using the results from notes uploaded on moodle.
+I've covered the cases mentioned in the problem description.
+
+Test cases: (along with output in swi-prolog)
+
+?- [assign7].
+true.
+
+?- hasType([], num(1), X).
+X = tint.
+
+?- hasType([(X,tbool)], var(X), Y).
+Y = tbool ;
+false.
+ 
+?- hasType([(X,tbool)], abs(var(X)), Y).
+false.
+
+?- hasType([(X,tint)], abs(var(X)), Y).
+Y = tint ;
+false.
+
+?- hasType([(x,tint)], add(var(x), var(x)), Y).
+Y = tint ;
+false.
+
+?- hasType([(x,tint),(y,tint)], add(var(x), var(y)), Y).
+Y = tint ;
+false.
+
+?- hasType([(x,tint),(y,tint)], add(var(x), var(y)), tint).
+true ;
+false.
+
+?- hasType([(x,tint),(y,tint)], lt(var(x), var(y)), T).
+T = tbool ;
+false.
+
+?- hasType([(x,tint),(y,tint)], lte(var(x), var(y)), T).
+T = tbool ;
+false.
+
+?- hasType([(x,tint),(y,tint)], lte(add(var(x), var(y)), var(y)), T).
+T = tbool ;
+false.
+
+?- hasType([(x,tint),(y,tint)], equal(lt(var(x), var(y)), true), T).
+T = tbool ;
+false.
+
+?- hasType([(x,tint),(y,tint)], equal(lt(var(x), var(y)), not(true)), T).
+T = tbool ;
+false.
+
+?- hasType([(x,tint),(y,tint)], if_then_else(lt(var(x), var(y)), tup(2,[var(x),var(y)]), tup(2,[var(x),var(x)])), T).
+T = tcp(2, [tint, tint]) ;
+false.
+
+?- takeout((x,tint), [(x,tint),(y,tbool)], G).
+G = [(y, tbool)] ;
+false.
+
+?- typeElaborates([(x,tint), (y,tint)], def(var(z), lt(var(x), var(y))), G).
+G = [(z, tbool)] ;
+false.
+
+?- augment([(x,tint),(y,tint)], [(z,tbool)], G).
+G = [(z, tbool),  (x, tint),  (y, tint)] ;
+false.
+
+?- hasType([(x,tint),(y,tint),(z,tbool)], tup(2, [var(y),var(z)]), T).
+T = tcp(2, [tint, tbool]) ;
+false.
+
+?- hasType([(x,tint),(y,tint),(z,tbool)], tup(3, [var(x),var(y),var(z)]), T).
+T = tcp(3, [tint, tint, tbool]) ;
+false.
+
+?- hasType([(x,tint),(y,tint)], let_in_end(def(var(z), lt(var(x), var(y))), tup(3, [var(x), var(y), var(z)])), T).
+T = tcp(3, [tint, tint, tbool]) ;
+false.
+
+?- hasType([(x,tint),(y,tint)], lambda(var(x), mult(var(x), add(var(x), var(x)))), T).
+T = arrow(tint, tint) ;
+false.
+
+?- hasType([(x,tint),(y,tint)], apply(lambda(var(x), mult(var(x), add(var(x),var(x)))), num(1)), T).
+T = tint ;
+false.
+
+?- hasType([(x,tint),(y,tint)], apply(lambda(var(x), mult(var(x), add(var(x),var(x)))), true), T).
+false.
+
+?- hasType([(x,tint),(y,tint)], proj(3, tup(4, [var(x), var(y), unit, true])), T).
+T = tunit ;
+false.
+
+?- hasType([(x,tint),(y,tint)], proj(4, tup(4, [var(x), var(y), unit, true])), T).
+T = tbool ;
+false.
+
+?- typeElaborates([], def(tup(3, [var(x), var(y), var(z)]), tup(3, [true, unit, num(3)])), T).
+T = [(x, tbool),  (y, tunit),  (z, tint)] ;
+false.
+
+?- typeElaborates([(x,tint), (y,tint)], seq(def(var(y),true), def(var(x),var(y))), T).
+T = [(x, tbool),  (y, tbool)].
+
+?- typeElaborates([], def(tup(2, [var(x),var(y)]), tup(2, [num(1), true])), G).
+G = [(x, tint),  (y, tbool)] ;
+false.
+
+?- hasType([], lambda(var(x), num(1)), T).
+T = arrow(typeVar(x), tint).
+
+?- typeElaborates([(x,tint), (y,tint)], parallel(def(var(x), mult(var(y), num(1))), def(var(y), gt(var(y), var(x)))), T).
+T = [(x, tint),  (y, tbool)].
+
+?- typeElaborates([(x,tint), (z, tbool)], local_in_end(def(var(x), true), def(var(y), or(var(x), var(z)))), T).
+T = [(y, tbool)].

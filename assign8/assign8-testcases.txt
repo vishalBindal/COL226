@@ -1,0 +1,56 @@
+Assignment 8
+
+Vishal Bindal
+2018CS50425
+
+I've done the implementation for SECD and krivine machine
+in assign8_secd.ml and assign8_krivine.ml respectively.
+
+I've also covered addition, multiplication and Greater-than-zero comparison
+for natural numbers in SECD machine.
+
+For test cases, eval (e:exp) (rho:table) is called, 
+which calls the secd and krivine functions in turn.
+
+
+Test cases: (and their output in Ocaml)
+
+----------------------------
+For SECD machine
+----------------------------
+
+# let e = Apply(Lambda("x", Add(Var("x"), Mult(Var("y"), Var("x")))), Add(I(4), I(9)));;     
+val e : exp =
+  Apply (Lambda ("x", Add (Var "x", Mult (Var "y", Var "x"))),
+   Add (I 4, I 9))
+# let rho = [("y", Int(10))];;
+val rho : (string * answer) list = [("y", Int 10)]
+# eval e rho;;
+- : answer = Int 143
+
+# let e = Gtz(Apply(Lambda("x", Mult(I(10), Add(Var("x"), I(5)))), I(5)));;   
+val e : exp =
+  Gtz (Apply (Lambda ("x", Mult (I 10, Add (Var "x", I 5))), I 5))
+# eval e [];;
+- : answer = Bool true
+
+# let e = Add(Var("x"), Var("y"));;
+val e : exp = Add (Var "x", Var "y")
+# let rho = [("x", Int(5));("y", Int(10))];;
+val rho : (string * answer) list = [("x", Int 5); ("y", Int 10)]
+# eval e rho;;
+- : answer = Int 15
+
+----------------------------
+For krivine machine
+----------------------------
+# let e = Apply(Lambda("x", Var("x")), Var("y"));;
+val e : exp = Apply (Lambda ("x", Var "x"), Var "y")
+# let rho = [("y", Int(5))];;
+val rho : (string * clos) list = [("y", Int 5)]
+# eval e rho;;
+- : answer = Int 5
+# let e1 = Var("y");;   
+val e1 : exp = Var "y"
+# eval e1 rho;;
+- : answer = Int 5

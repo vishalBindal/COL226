@@ -1,0 +1,48 @@
+Assignment 4
+Readme
+Vishal Bindal (2018CS50425)
+
+Run instructions:
+    make
+    ./assignment4 <csv_file_path> <m> <n> <expression_file_path>
+
+(e.g. ./assignment4 sheet.csv 4 4 input.txt)
+
+For cleaning generated files, 
+    make clean
+
+Output is printed to console.
+
+
+NOTE:
+For reading .csv file, I have used Str.split_delim, so 
+The number of elements in a row = (no of commas in a line in csv file) + 1
+For e.g. The following csv file will give a 6X6 sheet:
+1,10,100,,,
+2,20,200,,,
+3,30,300,,,
+,,,,,
+,,,,,
+,,,,,
+
+
+Brief explanation of implementation:
+1) The sheet is implemented as an 'element array array', where
+    element = Value of float | Empty
+    element was chosen to handle cases of empty cells.
+    Array was chosen because it is more efficient to access (x,y)th element than a list
+2) The functions reccomended in the assignment have been implemented. Apart from them, I have defined functions add_index, subt_index, mult_index and div_index for handling cases I := FUNC I R and I := FUNC R I. However, they also use op_const (specified below)
+3) Most functions use some common parent functions to help make the code compact:
+    a) All row and column functions are implemented using the general function for storing result of whole range in one index. e.g. ROWSUM and COLSUM are implemented using SUM. If we call ROWSUM on an (m,n) dimension range, then SUM is called for each of the m rows and the result stored in m indices. 
+    b) For the above purpose row_func and col_func are used
+    c) For implementing functions for I := FUNC R R, op_range is used. add_range, subt_range, mult_range and div_range are implemented by calling op_range with suitable operator function (add, subt, mult, div : defined separately for type element)
+    d) For implementing functions for I := FUNC R C and I := FUNC C R, op_const is used
+4) printsheet is used for printing sheet after each formula, also incrementing insno (instruction no). printsheetinitial just prints the sheet alongwith a different starting message. For empty cells, "__" is printed.
+
+
+Changes to assignment 3:
+a) In parser.mly:
+1) Modified rules for start token 'main' to handle end of lines better. Now the rules can handle multiple formulae on the same line, and empty newlines in between. 
+2) Replaced printf statements in the actions of each expr, with function calls defined in functions.ml. For the cases I := FUNC R I and I := FUNC I R, replaced the functions with newly defined functions (specified above)
+b) In sheet.ml:
+Added inchannel to read input from file passed in system arguments

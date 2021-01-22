@@ -1,0 +1,13 @@
+Assignment 3
+Readme
+
+In this assignment, I have implemented a parser using Ocamlyacc, which deals with expressions followed by a semicolon and newline. 
+The expression is of type (index assign func x) where x can be (range float), (range range), etc
+For checking, the OCaml functions (to be implemented in next assignment) are printed on the console
+
+I have referred the following link for the syntax:
+https://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html#s%3Alexyacc-example
+
+Changes to assignment 2:
+1. I had implemented Range as (I,I) by mistake, corrected it to (I:I)
+2. Removed the definition of tokens, printing of tokens from lex and shifted the definition of tokens to yacc.
